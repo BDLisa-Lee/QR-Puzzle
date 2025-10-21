@@ -1,0 +1,149 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>No Data Demons, Flawless Performance!</title>
+<style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr 1fr; gap: 10px; max-width: 600px; margin: auto; }
+        .piece { width: 100%; height: auto; border: 1px solid #ccc; }
+    </style>
+</head>
+<body><div id="puzzle"><img id="piece1" src="A_top_left.png" style="display:none; width: 200px; height: auto; margin: 5px;"/><img id="piece2" src="L_top_right.png" style="display:none; width: 200px; height: auto; margin: 5px;"/><img id="piece3" src="C_middle_left.png" style="display:none; width: 200px; height: auto; margin: 5px;"/><img id="piece4" src="O_middle_right.png" style="display:none; width: 200px; height: auto; margin: 5px;"/><img id="piece5" src="A2_bottom_left.png" style="display:none; width: 200px; height: auto; margin: 5px;"/><img id="piece6" src="Plus_bottom_right.png" style="display:none; width: 200px; height: auto; margin: 5px;"/></div>
+<h1>Scan QR Codes to Reveal the Image</h1>
+<div class="grid">
+<img alt="A_top_left" class="piece" id="A_top_left" src=""/>
+<img alt="L_top_right" class="piece" id="L_top_right" src=""/>
+<img alt="C_middle_left" class="piece" id="C_middle_left" src=""/>
+<img alt="O_middle_right" class="piece" id="O_middle_right" src=""/>
+<img alt="A2_bottom_left" class="piece" id="A2_bottom_left" src=""/>
+<img alt="Plus_bottom_right" class="piece" id="Plus_bottom_right" src=""/>
+</div>
+<script>
+        const pieces = {
+            "A_top_left": "A_top_left.png",
+            "L_top_right": "L_top_right.png",
+            "C_middle_left": "C_middle_left.png",
+            "O_middle_right": "O_middle_right.png",
+            "A2_bottom_left": "A2_bottom_left.png",
+            "Plus_bottom_right": "Plus_bottom_right.png"
+        };
+
+        // Reveal pieces based on localStorage flags
+        for (const key in pieces) {
+            if (localStorage.getItem(key) === "true") {
+                document.getElementById(key).src = pieces[key];
+            }
+        }
+
+        // Check URL parameters to update localStorage
+        const urlParams = new URLSearchParams(window.location.search);
+        for (const key in pieces) {
+            if (urlParams.has(key)) {
+                localStorage.setItem(key, "true");
+                document.getElementById(key).src = pieces[key];
+            }
+        }
+    </script>
+<script>
+const scannedCodes = new Set();
+
+function onQRCodeScanned(code) {
+    if (!scannedCodes.has(code)) {
+        scannedCodes.add(code);
+        const pieceId = getPieceIdFromCode(code);
+        if (pieceId) {
+            document.getElementById(pieceId).style.display = 'inline';
+        }
+        if (scannedCodes.size === 6) {
+            showFireworks();
+            showCompletionMessage();
+        }
+    }
+}
+
+function getPieceIdFromCode(code) {
+    const codeMap = {
+        'QR1': 'piece1',
+        'QR2': 'piece2',
+        'QR3': 'piece3',
+        'QR4': 'piece4',
+        'QR5': 'piece5',
+        'QR6': 'piece6'
+    };
+    return codeMap[code];
+}
+
+function showFireworks() {
+    const fireworks = document.createElement('div');
+    fireworks.innerHTML = '🎆🎇✨';
+    fireworks.style.fontSize = '50px';
+    fireworks.style.textAlign = 'center';
+    fireworks.style.marginTop = '20px';
+    document.body.appendChild(fireworks);
+}
+
+function showCompletionMessage() {
+    const msg = document.createElement('h2');
+    msg.textContent = "You've Hunted the Data Demon!";
+    msg.style.textAlign = 'center';
+    msg.style.color = 'red';
+    document.body.appendChild(msg);
+}
+</script><canvas id="fireworksCanvas" style="position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:9999; display:none;"></canvas><script>
+function showFireworks() {
+    const canvas = document.getElementById('fireworksCanvas');
+    canvas.style.display = 'block';
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let particles = [];
+    const colors = ['#ff5050', '#ffd700', '#00ffcc', '#66ff66', '#3399ff', '#cc66ff'];
+
+    function createFirework() {
+        const x = Math.random() * canvas.width;
+        const y = Math.random() * canvas.height / 2;
+        const count = 100;
+        for (let i = 0; i < count; i++) {
+            const angle = Math.random() * 2 * Math.PI;
+            const speed = Math.random() * 5 + 2;
+            particles.push({
+                x: x,
+                y: y,
+                dx: Math.cos(angle) * speed,
+                dy: Math.sin(angle) * speed,
+                life: 100,
+                color: colors[Math.floor(Math.random() * colors.length)]
+            });
+        }
+    }
+
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach((p, index) => {
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, 2, 0, 2 * Math.PI);
+            ctx.fillStyle = p.color;
+            ctx.fill();
+            p.x += p.dx;
+            p.y += p.dy;
+            p.life--;
+            if (p.life <= 0) particles.splice(index, 1);
+        });
+        if (particles.length > 0) {
+            requestAnimationFrame(animate);
+        } else {
+            canvas.style.display = 'none';
+        }
+    }
+
+    createFirework();
+    createFirework();
+    createFirework();
+    animate();
+}
+</script></body>
+</html>
