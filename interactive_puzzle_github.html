@@ -1,0 +1,51 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Interactive Image Puzzle</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr 1fr; gap: 10px; max-width: 600px; margin: auto; }
+        .piece { width: 100%; height: auto; border: 1px solid #ccc; }
+    </style>
+</head>
+<body>
+    <h1>No Data Demons, Flawless Performance!</h1>
+    <div class="grid">
+        <img id="A_top_left" class="piece" src="" alt="A_top_left">
+        <img id="L_top_right" class="piece" src="" alt="L_top_right">
+        <img id="C_middle_left" class="piece" src="" alt="C_middle_left">
+        <img id="O_middle_right" class="piece" src="" alt="O_middle_right">
+        <img id="A2_bottom_left" class="piece" src="" alt="A2_bottom_left">
+        <img id="Plus_bottom_right" class="piece" src="" alt="Plus_bottom_right">
+    </div>
+
+    <script>
+        const pieces = {
+            "A_top_left": "A_top_left.png",
+            "L_top_right": "L_top_right.png",
+            "C_middle_left": "C_middle_left.png",
+            "O_middle_right": "O_middle_right.png",
+            "A2_bottom_left": "A2_bottom_left.png",
+            "Plus_bottom_right": "Plus_bottom_right.png"
+        };
+
+        // Reveal pieces based on localStorage flags
+        for (const key in pieces) {
+            if (localStorage.getItem(key) === "true") {
+                document.getElementById(key).src = pieces[key];
+            }
+        }
+
+        // Check URL parameters to update localStorage
+        const urlParams = new URLSearchParams(window.location.search);
+        for (const key in pieces) {
+            if (urlParams.has(key)) {
+                localStorage.setItem(key, "true");
+                document.getElementById(key).src = pieces[key];
+            }
+        }
+    </script>
+</body>
+</html>
